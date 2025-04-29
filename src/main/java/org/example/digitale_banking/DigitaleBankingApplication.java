@@ -57,7 +57,7 @@ public class DigitaleBankingApplication {
 
             // création des opérations pour chaque user
             bankAccountRepo.findAll().forEach(account->{
-                for(int i = 0; i<10; i++){
+                for(int i = 0; i<1; i++){
                     AccountOperation operation = new AccountOperation();
                     operation.setDate(new Date());
                     operation.setAmount(Math.random()*10000);
