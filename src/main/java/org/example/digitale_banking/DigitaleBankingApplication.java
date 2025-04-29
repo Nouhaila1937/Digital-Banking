@@ -1,6 +1,7 @@
 package org.example.digitale_banking;
 
 import org.example.digitale_banking.Enum.AccountStatus;
+import org.example.digitale_banking.Enum.OperationType;
 import org.example.digitale_banking.Repositories.BankAccountRepo;
 import org.example.digitale_banking.Repositories.CustomerRepo;
 import org.example.digitale_banking.Repositories.OperationsRepo;
@@ -54,6 +55,17 @@ public class DigitaleBankingApplication {
                 bankAccountRepo.save(savingsAccount);
             });
 
+            // création des opérations pour chaque user
+            bankAccountRepo.findAll().forEach(account->{
+                for(int i = 0; i<10; i++){
+                    AccountOperation operation = new AccountOperation();
+                    operation.setDate(new Date());
+                    operation.setAmount(Math.random()*10000);
+                    operation.setBankAccount(account);
+                    operation.setOperation(Math.random()>0.5? OperationType.DEBIT : OperationType.CREDIT);
+                    accountOperation.save(operation);
+                }
+            });
         };
     }
 }
