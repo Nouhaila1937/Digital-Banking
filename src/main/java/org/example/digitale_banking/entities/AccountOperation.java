@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.digitale_banking.Enum.OperationType;
 
-import java.math.BigDecimal;
 import java.util.Date;
 @Entity
 @Data
