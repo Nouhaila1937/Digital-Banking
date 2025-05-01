@@ -1,5 +1,6 @@
 package org.example.digitale_banking;
 
+import org.example.digitale_banking.Dtos.CustomerDTO;
 import org.example.digitale_banking.Enum.AccountStatus;
 import org.example.digitale_banking.Enum.OperationType;
 import org.example.digitale_banking.Repositories.BankAccountRepo;
@@ -83,10 +84,12 @@ public class DigitaleBankingApplication {
     CommandLineRunner start (BankAccountService bankAccountService) {
         return args -> {
             Stream.of("Nouhaila", "Adam","Manal").forEach(name -> {
-                Customer customer = new Customer();
-                customer.setName(name);
-                customer.setEmail(name + "@gmail.com");
-                bankAccountService.saveCustomer(customer);
+                //Customer customer = new Customer();
+                CustomerDTO customerdto = new CustomerDTO();
+                customerdto.setName(name);
+                customerdto.setEmail(name + "@gmail.com");
+                //bankAccountService.saveCustomer(customer);
+                bankAccountService.saveCustomer(customerdto);
             });
 
             bankAccountService.listCustomers().forEach(customer -> {
