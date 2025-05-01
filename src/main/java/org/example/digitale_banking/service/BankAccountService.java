@@ -19,5 +19,5 @@ public interface BankAccountService {
     void debitBankAccount(String id, double amount,String description)throws BankAccountException,BalanceNotSufficientException;
     void creditBankAccount(String id, double amount,String description) throws BankAccountException;
     void transferBankAccount(String fromCustomerId, String toCustomerId, double amount) throws BankAccountException, BalanceNotSufficientException;
-
+    List<BankAccount> bankAccountList();
 }

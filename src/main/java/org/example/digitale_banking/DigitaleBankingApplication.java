@@ -6,12 +6,18 @@ import org.example.digitale_banking.Repositories.BankAccountRepo;
 import org.example.digitale_banking.Repositories.CustomerRepo;
 import org.example.digitale_banking.Repositories.OperationsRepo;
 import org.example.digitale_banking.entities.*;
+import org.example.digitale_banking.exceptions.BalanceNotSufficientException;
+import org.example.digitale_banking.exceptions.BankAccountException;
+import org.example.digitale_banking.exceptions.CustomerNotFoundException;
+import org.example.digitale_banking.service.BankAccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -22,8 +28,10 @@ public class DigitaleBankingApplication {
         SpringApplication.run(DigitaleBankingApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner start(CustomerRepo customerRepository,
+
+
+    //@Bean
+    CommandLineRunner commandLineRunner(CustomerRepo customerRepository,
                             BankAccountRepo bankAccountRepo ,
                             OperationsRepo accountOperation
                             ) {
@@ -31,7 +39,7 @@ public class DigitaleBankingApplication {
             Stream.of("Nouhaila", "Adam", "Malak", "Yaakoub").forEach(name -> {
                 Customer customer = new Customer();
                 customer.setName(name);
-                customer.setEmail(name + "gmail.com");
+                customer.setEmail(name + "@gmail.com");
                 customerRepository.save(customer);
             });
             customerRepository.findAll().forEach(customer -> {
@@ -66,6 +74,41 @@ public class DigitaleBankingApplication {
                     accountOperation.save(operation);
                 }
             });
+        };
+    }
+
+
+    @Bean
+    @Transactional
+    CommandLineRunner start (BankAccountService bankAccountService) {
+        return args -> {
+            Stream.of("Nouhaila", "Adam","Manal").forEach(name -> {
+                Customer customer = new Customer();
+                customer.setName(name);
+                customer.setEmail(name + "@gmail.com");
+                bankAccountService.saveCustomer(customer);
+            });
+
+            bankAccountService.listCustomers().forEach(customer -> {
+                try {
+                     bankAccountService.saveCurrentAccount(Math.random() * 10000, customer.getId(), 9000);
+                     bankAccountService.savingAccount(5.5, Math.random() * 13000, customer.getId());
+
+
+                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
+
+                    for (BankAccount bankAccount : bankAccounts) {
+                        for (int i = 0; i < 10; i++) {
+                            bankAccountService.creditBankAccount(bankAccount.getId(), 10 + Math.random() * 100, "Crédit Bank");
+                            bankAccountService.debitBankAccount(bankAccount.getId(), 10 + Math.random() * 100, "Débit Bank");
+
+                        }
+                    }
+                } catch (CustomerNotFoundException | BankAccountException | BalanceNotSufficientException e) {
+                    e.printStackTrace();
+                }
+            });
+
         };
     }
 }

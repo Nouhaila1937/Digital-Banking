@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.digitale_banking.exceptions.BalanceNotSufficientException;
 
-import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -84,7 +83,7 @@ public class BankAccountImpl implements BankAccountService {
     @Override
     public void debitBankAccount(String accountid, double amount, String description) throws BankAccountException,BalanceNotSufficientException{
         BankAccount bankAccount =getBankAccount(accountid);
-        if(bankAccount.getBalance() <amount) {
+        if(bankAccount.getBalance() < amount) {
             throw new BalanceNotSufficientException("Insufficient balance");
         }
         AccountOperation operation = new AccountOperation();
@@ -93,6 +92,7 @@ public class BankAccountImpl implements BankAccountService {
         operation.setDescription(description);
         operation.setDate(new Date());
         operation.setBankAccount(bankAccount);
+        operationsRepo.save(operation);
         bankAccount.setBalance(bankAccount.getBalance() - amount);
         bankAccountRepo.save(bankAccount);
 
@@ -107,6 +107,7 @@ public class BankAccountImpl implements BankAccountService {
         operation.setDescription(description);
         operation.setDate(new Date());
         operation.setBankAccount(bankAccount);
+        operationsRepo.save(operation);
         bankAccount.setBalance(bankAccount.getBalance() + amount);
         bankAccountRepo.save(bankAccount);
     }
@@ -116,5 +117,9 @@ public class BankAccountImpl implements BankAccountService {
         debitBankAccount(fromCustomerId,amount,"Transfer to "+toCustomerId);
         creditBankAccount(toCustomerId,amount,"Transfer tfrom "+fromCustomerId);
 
+    }
+    @Override
+    public List<BankAccount> bankAccountList(){
+        return bankAccountRepo.findAll();
     }
 }
