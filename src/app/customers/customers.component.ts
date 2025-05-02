@@ -1,27 +1,27 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {NgForOf, NgIf} from "@angular/common";
+import {AsyncPipe, CommonModule, NgForOf, NgIf} from "@angular/common";
+import {CustomerService} from '../services/customer.service';
+import {catchError, Observable, throwError} from 'rxjs';
+import {Customer} from '../module/customer.model';
 @Component({
   selector: 'app-customers',
+  standalone: true,
   imports: [
-    NgIf,
-    NgForOf,
-    HttpClientModule
+    HttpClientModule,
+    AsyncPipe,
+    CommonModule
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.css'
 })
 export class CustomersComponent implements OnInit{
-  customers: any;
+  customers: Observable<Customer[]> | undefined;
+  errorMessage!: string;
+  constructor(private customerService : CustomerService) { }
 
-  constructor(private http:HttpClient) {}
   ngOnInit():void{
-      this.http.get("http://localhost:8081/customers").subscribe(data=>{ //une fois la réponse arrive par défaut il va stocker les données dans un object ts qui est data
-        this.customers=data;
-
-      },error => {
-        console.log(error)
-      })
+     this.customers=this.customerService.getCustomers();
   }
 
 }

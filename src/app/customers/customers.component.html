@@ -1,6 +1,8 @@
 <div class="container mt-2">
-  <div class="card" *ngIf="customers">
-    <div class="card-header">Customers</div>
+
+  <ng-container *ngIf="customers | async as listCustomers; else failureOrLading "></ng-container>
+    <div class="card" *ngIf="customers">
+      <div class="card-header">Customers</div>
     <div class="card-body">
       <table class="table table-spaced">
           <thead>
@@ -11,7 +13,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let c of customers">
+          <tr *ngFor="let c of customers| async">
             <td>{{c.id}}</td>
             <td>{{c.name}}</td>
             <td>{{c.email}}</td>
