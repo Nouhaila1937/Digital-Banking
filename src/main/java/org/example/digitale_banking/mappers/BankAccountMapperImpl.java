@@ -2,7 +2,9 @@ package org.example.digitale_banking.mappers;
 
 import org.example.digitale_banking.Dtos.CurrentBankAccountDTO;
 import org.example.digitale_banking.Dtos.CustomerDTO;
+import org.example.digitale_banking.Dtos.OperationsDTO;
 import org.example.digitale_banking.Dtos.SavingAccountDTO;
+import org.example.digitale_banking.entities.AccountOperation;
 import org.example.digitale_banking.entities.CurrentAccount;
 import org.example.digitale_banking.entities.Customer;
 import org.example.digitale_banking.entities.SavingAccount;
@@ -34,6 +36,7 @@ public class BankAccountMapperImpl {
         BeanUtils.copyProperties(savingAccount, savingAccountDTO);
         // parce que la propriètè customerdto qui existe dans savingaccountdto ne sera pas transfèrer du coup on a besoin de faire ceci
         savingAccountDTO.setCustomerDTO(fromCustomer(savingAccount.getCustomer()));
+        savingAccountDTO.setType(savingAccount.getClass().getSimpleName());
         return savingAccountDTO;
 
     }
@@ -50,6 +53,7 @@ public class BankAccountMapperImpl {
         CurrentBankAccountDTO currentAccountDTO = new CurrentBankAccountDTO();
         BeanUtils.copyProperties( currentAccount, currentAccountDTO );
         currentAccountDTO.setCustomerDTO(fromCustomer(currentAccount.getCustomer()));
+        currentAccountDTO.setType(currentAccount.getClass().getSimpleName());
         return currentAccountDTO ;
 
     }
@@ -61,6 +65,19 @@ public class BankAccountMapperImpl {
         return currentAccount ;
 
     }
+
+    public OperationsDTO fromAccountOperation(AccountOperation accountOperation) {
+        OperationsDTO operationsDTO = new OperationsDTO();
+        BeanUtils.copyProperties(accountOperation, operationsDTO);
+        return operationsDTO;
+    }
+
+    public AccountOperation fromAccountOperationDTO(AccountOperation accountOperationDTO) {
+        AccountOperation accountOperation = new AccountOperation();
+        BeanUtils.copyProperties(accountOperationDTO, accountOperation);
+        return accountOperation;
+    }
+
 
 
 }

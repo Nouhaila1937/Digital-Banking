@@ -2,10 +2,7 @@ package org.example.digitale_banking.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.digitale_banking.Dtos.BankAccountDTO;
-import org.example.digitale_banking.Dtos.CurrentBankAccountDTO;
-import org.example.digitale_banking.Dtos.CustomerDTO;
-import org.example.digitale_banking.Dtos.SavingAccountDTO;
+import org.example.digitale_banking.Dtos.*;
 import org.example.digitale_banking.Enum.OperationType;
 import org.example.digitale_banking.Repositories.BankAccountRepo;
 import org.example.digitale_banking.Repositories.CustomerRepo;
@@ -14,11 +11,12 @@ import org.example.digitale_banking.entities.*;
 import org.example.digitale_banking.exceptions.BankAccountException;
 import org.example.digitale_banking.exceptions.CustomerNotFoundException;
 import org.example.digitale_banking.mappers.BankAccountMapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.digitale_banking.exceptions.BalanceNotSufficientException;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -228,4 +226,29 @@ public class BankAccountImpl implements BankAccountService {
         Customer customer = customerRepo.findById(id).orElseThrow(()->new CustomerNotFoundException("Customer with this id not found"));
         return  bankAccountMapper.fromCustomer(customer);
     }
+
+    @Override
+    public List<OperationsDTO> accounthistory(String accountid){
+        List<AccountOperation> accountOperations=operationsRepo.findByBankAccountId(accountid);
+        return accountOperations.stream().map(op->bankAccountMapper.fromAccountOperation(op)).collect(Collectors.toList());
+    }
+
+    @Override
+    public AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountException {
+        BankAccount bankAccount=bankAccountRepo.findById(accountId).orElse(null);
+        if(bankAccount==null) throw new BankAccountException("Account not Found");
+        Page<AccountOperation> accountOperations = operationsRepo.findByBankAccountId(accountId, PageRequest.of(page, size));
+        AccountHistoryDTO accountHistoryDTO=new AccountHistoryDTO();
+        List<OperationsDTO> accountOperationDTOS = accountOperations.getContent().stream().map(op -> bankAccountMapper.fromAccountOperation(op)).collect(Collectors.toList());
+        accountHistoryDTO.setAccountOperationDTOS(accountOperationDTOS);
+        accountHistoryDTO.setAccountId(bankAccount.getId());
+        accountHistoryDTO.setBalance(bankAccount.getBalance());
+        accountHistoryDTO.setCurrentPage(page);
+        accountHistoryDTO.setPageSize(size);
+        accountHistoryDTO.setTotalPages(accountOperations.getTotalPages());
+        return accountHistoryDTO;
+    }
+
+
+
 }

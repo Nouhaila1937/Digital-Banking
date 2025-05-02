@@ -1,9 +1,6 @@
 package org.example.digitale_banking.service;
 
-import org.example.digitale_banking.Dtos.BankAccountDTO;
-import org.example.digitale_banking.Dtos.CurrentBankAccountDTO;
-import org.example.digitale_banking.Dtos.CustomerDTO;
-import org.example.digitale_banking.Dtos.SavingAccountDTO;
+import org.example.digitale_banking.Dtos.*;
 import org.example.digitale_banking.entities.BankAccount;
 import org.example.digitale_banking.entities.CurrentAccount;
 import org.example.digitale_banking.entities.Customer;
@@ -35,4 +32,8 @@ public interface BankAccountService {
 //  List<BankAccount> bankAccountList();
     List<BankAccountDTO> bankAccountList();
     CustomerDTO getCustomer(Long id) throws CustomerNotFoundException;
+
+    List<OperationsDTO> accounthistory(String accountid);
+
+    AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountException;
 }
