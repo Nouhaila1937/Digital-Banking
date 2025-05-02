@@ -11,7 +11,13 @@ export class CustomerService {
   constructor(private http:HttpClient) {}
   // URL de base écrite en dur
   private baseUrl = "http://localhost:8081";
+
   public getCustomers():Observable<Array<Customer>>{
     return this.http.get<Array<Customer>>(this.baseUrl+"/customers")
   }
+
+  public searchCustomers(keyword : string):Observable<Array<Customer>>{
+    return this.http.get<Array<Customer>>(this.baseUrl+"/customers/search?keyword="+keyword)
+  }
+
 }
