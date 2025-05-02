@@ -1,7 +1,11 @@
 package org.example.digitale_banking.mappers;
 
+import org.example.digitale_banking.Dtos.CurrentBankAccountDTO;
 import org.example.digitale_banking.Dtos.CustomerDTO;
+import org.example.digitale_banking.Dtos.SavingAccountDTO;
+import org.example.digitale_banking.entities.CurrentAccount;
 import org.example.digitale_banking.entities.Customer;
+import org.example.digitale_banking.entities.SavingAccount;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,39 @@ public class BankAccountMapperImpl {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
         return customer;
+    }
+
+    public SavingAccountDTO fromSavingBankAccount(SavingAccount savingAccount) {
+        SavingAccountDTO savingAccountDTO = new SavingAccountDTO();
+        BeanUtils.copyProperties(savingAccount, savingAccountDTO);
+        // parce que la propriètè customerdto qui existe dans savingaccountdto ne sera pas transfèrer du coup on a besoin de faire ceci
+        savingAccountDTO.setCustomerDTO(fromCustomer(savingAccount.getCustomer()));
+        return savingAccountDTO;
+
+    }
+
+    public SavingAccount fromSavingBankAccountDTO(SavingAccountDTO savingAccountDTO) {
+        SavingAccount savingAccount = new SavingAccount ();
+        BeanUtils.copyProperties(savingAccountDTO, savingAccount );
+        savingAccount.setCustomer(fromCustomerDTO(savingAccountDTO.getCustomerDTO()));
+        return savingAccount ;
+
+    }
+
+    public CurrentBankAccountDTO fromCurrentBankAccount(CurrentAccount  currentAccount) {
+        CurrentBankAccountDTO currentAccountDTO = new CurrentBankAccountDTO();
+        BeanUtils.copyProperties( currentAccount, currentAccountDTO );
+        currentAccountDTO.setCustomerDTO(fromCustomer(currentAccount.getCustomer()));
+        return currentAccountDTO ;
+
+    }
+
+    public CurrentAccount fromCurrentBankAccountDTO(CurrentBankAccountDTO  currentAccountDTO) {
+        CurrentAccount currentAccount = new CurrentAccount();
+        BeanUtils.copyProperties( currentAccountDTO,currentAccount);
+        currentAccount.setCustomer(fromCustomerDTO(currentAccountDTO.getCustomerDTO()));
+        return currentAccount ;
+
     }
 
 

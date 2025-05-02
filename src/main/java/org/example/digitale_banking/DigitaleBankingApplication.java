@@ -1,6 +1,9 @@
 package org.example.digitale_banking;
 
+import org.example.digitale_banking.Dtos.BankAccountDTO;
+import org.example.digitale_banking.Dtos.CurrentBankAccountDTO;
 import org.example.digitale_banking.Dtos.CustomerDTO;
+import org.example.digitale_banking.Dtos.SavingAccountDTO;
 import org.example.digitale_banking.Enum.AccountStatus;
 import org.example.digitale_banking.Enum.OperationType;
 import org.example.digitale_banking.Repositories.BankAccountRepo;
@@ -98,12 +101,19 @@ public class DigitaleBankingApplication {
                      bankAccountService.savingAccount(5.5, Math.random() * 13000, customer.getId());
 
 
-                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
+//                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
+                      List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
 
-                    for (BankAccount bankAccount : bankAccounts) {
+                    for (BankAccountDTO bankAccount : bankAccounts) {
                         for (int i = 0; i < 10; i++) {
-                            bankAccountService.creditBankAccount(bankAccount.getId(), 10 + Math.random() * 100, "Crédit Bank");
-                            bankAccountService.debitBankAccount(bankAccount.getId(), 10 + Math.random() * 100, "Débit Bank");
+                            String acountId;
+                            if (bankAccount instanceof SavingAccountDTO) {
+                                acountId = ((SavingAccountDTO) bankAccount).getId();
+                            } else {
+                                acountId = ((CurrentBankAccountDTO) bankAccount).getId();
+                            }
+                            bankAccountService.creditBankAccount(acountId, 10 + Math.random() * 100, "Crédit Bank");
+                            bankAccountService.debitBankAccount(acountId, 10 + Math.random() * 100, "Débit Bank");
 
                         }
                     }
