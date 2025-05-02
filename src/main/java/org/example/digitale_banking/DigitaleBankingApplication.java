@@ -86,7 +86,7 @@ public class DigitaleBankingApplication {
     @Transactional
     CommandLineRunner start (BankAccountService bankAccountService) {
         return args -> {
-            Stream.of("Nouhaila", "Adam","Manal").forEach(name -> {
+            Stream.of("Nouhaila", "Adam","Manal","Malak").forEach(name -> {
                 //Customer customer = new Customer();
                 CustomerDTO customerdto = new CustomerDTO();
                 customerdto.setName(name);
