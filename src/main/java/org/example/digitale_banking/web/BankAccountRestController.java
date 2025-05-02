@@ -7,15 +7,13 @@ import org.example.digitale_banking.Dtos.BankAccountDTO;
 import org.example.digitale_banking.Dtos.OperationsDTO;
 import org.example.digitale_banking.exceptions.BankAccountException;
 import org.example.digitale_banking.service.BankAccountService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
 @Slf4j
 @AllArgsConstructor
+@CrossOrigin("*")
 public class BankAccountRestController {
     BankAccountService bankAccountService;
 
