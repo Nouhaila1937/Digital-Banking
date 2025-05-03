@@ -20,4 +20,8 @@ export class CustomerService {
     return this.http.get<Array<Customer>>(this.baseUrl+"/customers/search?keyword="+keyword)
   }
 
+  public saveCustomers(customer : Customer):Observable <Customer>{
+    return this.http.post<Customer>(this.baseUrl+"/addcustomer",customer)
+  }
 }
+
