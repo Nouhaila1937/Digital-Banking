@@ -23,5 +23,9 @@ export class CustomerService {
   public saveCustomers(customer : Customer):Observable <Customer>{
     return this.http.post<Customer>(this.baseUrl+"/addcustomer",customer)
   }
+
+  deleteCustomer(id: number) {
+    return this.http.delete (this.baseUrl+"/customers/"+id);
+  }
 }
 
