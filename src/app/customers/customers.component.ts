@@ -41,6 +41,8 @@ export class CustomersComponent implements OnInit{
   }
 
   handleDeleteCustomer(c: Customer) {
+    let confirmation=confirm("Tu es sur de vouloir supprimmer ce customer?")
+    if(!confirmation) return;
     this.customerService.deleteCustomer(c.id).subscribe({
       next:(res)=>{
         this.handleSearchCustomers();
