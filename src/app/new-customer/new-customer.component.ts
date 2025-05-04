@@ -32,7 +32,7 @@ export class NewCustomerComponent implements OnInit{
     next:data=>{
       alert("Customer added successfully");
       //this.newCustomerFormGroup.reset(); vider les champs après click sur save
-      this.router.navigateByUrl("/customers");
+      this.router.navigateByUrl("/admin/customers");
     },
     error:err=>{
       console.log(err);
