@@ -34,7 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity()
 
 public class SecurityConfig {
-    //@Value("${jwt.secret}")
+    @Value("${jwt.secret}")
     private String secretKey;
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
@@ -57,7 +57,6 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/auth/login/**").permitAll())
                 .authorizeHttpRequests(ar -> ar.anyRequest().authenticated())
-                //.httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
                 .build();
     }
