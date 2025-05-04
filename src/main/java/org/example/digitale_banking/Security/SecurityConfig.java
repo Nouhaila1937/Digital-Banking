@@ -1,5 +1,4 @@
 package org.example.digitale_banking.Security;
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,34 +31,24 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
+
 public class SecurityConfig {
-
-    @Value("${jwt.secret}")
+    //@Value("${jwt.secret}")
     private String secretKey;
-
     @Bean
-    public InMemoryUserDetailsManager uinMemoryUserDetailsManager() {
-            PasswordEncoder passwordEncoder=passwordEncoder();
-            return new InMemoryUserDetailsManager(
-            User.withUsername("user1").password(passwordEncoder.encode("123")).authorities("USER").build(),
-            User.withUsername("admin").password(passwordEncoder.encode("123")).authorities("USER","ADMIN").build()
-    );
-}
+    public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
+        PasswordEncoder passwordEncoder = passwordEncoder();
+        return new InMemoryUserDetailsManager(
+                User.withUsername("user1").password(passwordEncoder.encode("123")).authorities("USER").build(),
+                User.withUsername("admin").password(passwordEncoder.encode("123")).authorities("USER","ADMIN").build()
+        );
 
+    }
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(daoAuthenticationProvider);
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return  httpSecurity
@@ -76,16 +64,25 @@ public class SecurityConfig {
 
     @Bean
     JwtEncoder jwtEncoder() {
-       // String secretKey="9faa372517ac1d389758d3750fc07acf00f542277f26fec1ce4593e93f64e338";
+//        String secretKey="9faa372517ac1d389758d3750fc07acf00f542277f26fec1ce4593e93f64e338";
         return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey.getBytes()));
     }
 
     @Bean
     JwtDecoder jwtDecoder() {
-        //String secretKey="9faa372517ac1d389758d3750fc07acf00f542277f26fec1ce4593e93f64e338";
+//        String secretKey="9faa372517ac1d389758d3750fc07acf00f542277f26fec1ce4593e93f64e338";
         SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "RSA");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        return new ProviderManager(daoAuthenticationProvider);
+    }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -98,9 +95,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-
-
-
 }
 
 
